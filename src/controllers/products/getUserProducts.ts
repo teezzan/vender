@@ -4,10 +4,12 @@ import { getRepository } from 'typeorm';
 import { Product } from 'typeorm/entities/Product';
 import { CustomError } from 'utils/response/custom-error/CustomError';
 
-export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserProducts = async (req: Request, res: Response, next: NextFunction) => {
+  const sellerId = req.jwtPayload.id;
+
   const productRepository = getRepository(Product);
   try {
-    const products = await productRepository.find({});
+    const products = await productRepository.find({ sellerId });
 
     res.customSuccess(200, 'Success', products);
   } catch (err) {
