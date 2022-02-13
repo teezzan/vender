@@ -8,12 +8,14 @@ import {
   getUserProducts,
   deleteProduct,
 } from 'controllers/products';
+import { buyProduct } from 'controllers/users';
 import { checkJwt } from 'middleware/checkJwt';
 import { checkRole } from 'middleware/checkRole';
 import {
   validatorUpdateProduct,
   validatorCreateProduct,
   validatorRestockProduct,
+  validatorBuyProduct,
 } from 'middleware/validation/products';
 import { Roles } from 'typeorm/entities/types';
 
@@ -32,5 +34,7 @@ router.put('/restock/:id', [checkJwt, checkRole([Roles.Seller]), validatorRestoc
 router.put('/:id', [checkJwt, checkRole([Roles.Seller]), validatorUpdateProduct], updateProduct);
 
 router.delete('/:id', [checkJwt, checkRole([Roles.Seller])], deleteProduct);
+
+router.post('/buy', [checkJwt, checkRole([Roles.Buyer]), validatorBuyProduct], buyProduct);
 
 export default router;

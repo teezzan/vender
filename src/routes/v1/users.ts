@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { changePassword, login, register } from 'controllers/auth';
 import { editUser, getUser, deleteUser } from 'controllers/users';
-import { depositCoin } from 'controllers/users/depositCoin';
+import { depositCoin } from 'controllers/users/';
 import { checkJwt } from 'middleware/checkJwt';
 import { checkRole } from 'middleware/checkRole';
 import { validatorChangePassword, validatorLogin, validatorRegister } from 'middleware/validation/auth';

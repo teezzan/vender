@@ -1,5 +1,14 @@
 import bcrypt from 'bcryptjs';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Transaction,
+  TransactionRepository,
+  Repository,
+} from 'typeorm';
 
 import { Role, Language, Roles, CoinDenomination } from './types';
 
@@ -29,7 +38,7 @@ export class User {
     default: () => "'[]'",
     nullable: false,
   })
-  deposit: Array<{ denomination: CoinDenomination; quantity: number }>;
+  deposit: Array<{ denomination: number; quantity: number }>;
 
   @Column()
   @CreateDateColumn()
@@ -52,5 +61,28 @@ export class User {
       role: Roles[this.role],
       deposit: this.deposit,
     };
+  }
+  totalDeposit() {
+    let totalDeposit = 0;
+    this.deposit.forEach((coin) => {
+      totalDeposit += coin.denomination * coin.quantity;
+    });
+    return totalDeposit;
+  }
+
+  @Transaction()
+  async moveFunds(sinkUser: User, amount: number, @TransactionRepository(User) userRepository: Repository<User>) {
+    const coinType = CoinDenomination.Ten;
+    const index = this.deposit.findIndex((coin) => coin.denomination == coinType);
+
+    this.deposit[index].quantity = this.deposit[index].quantity - 1;
+    sinkUser.deposit.push({
+      denomination: coinType,
+      quantity: 1,
+    });
+
+    const p1 = await userRepository.save(this);
+    const p2 = await userRepository.save(sinkUser);
+    return p1;
   }
 }

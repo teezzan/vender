@@ -10,7 +10,8 @@ export const depositCoin = async (req: Request, res: Response, next: NextFunctio
   const id = req.jwtPayload.id;
   const { coin } = req.body;
 
-  const coinType = coin as CoinDenomination;
+  const coinType = parseInt(CoinDenomination[coin]);
+
   const userRepository = getRepository(User);
   try {
     const user = await userRepository.findOne({ where: { id } });
