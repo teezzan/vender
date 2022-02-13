@@ -29,7 +29,7 @@ export class User {
     default: () => "'[]'",
     nullable: false,
   })
-  deposit: Array<{ denomination: CoinDenomination; number: number }>;
+  deposit: Array<{ denomination: CoinDenomination; quantity: number }>;
 
   @Column()
   @CreateDateColumn()

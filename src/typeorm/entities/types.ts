@@ -9,5 +9,5 @@ export enum CoinDenomination {
   Ten = 10,
   Twenty = 20,
   Fifty = 50,
-  Hindred = 100,
+  Hundred = 100,
 }

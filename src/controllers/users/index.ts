@@ -1,3 +1,3 @@
-export * from './deleteMe';
-export * from './editMe';
-export * from './getMe';
+export * from './deleteUser';
+export * from './editUser';
+export * from './getUser';

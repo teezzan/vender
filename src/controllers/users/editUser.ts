@@ -4,7 +4,7 @@ import { getRepository } from 'typeorm';
 import { User } from 'typeorm/entities/User';
 import { CustomError } from 'utils/response/custom-error/CustomError';
 
-export const editMe = async (req: Request, res: Response, next: NextFunction) => {
+export const editUser = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.jwtPayload.id;
   const { username } = req.body;
 
