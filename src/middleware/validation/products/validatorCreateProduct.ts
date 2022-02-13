@@ -6,7 +6,7 @@ import { CustomError } from 'utils/response/custom-error/CustomError';
 const schema = Joi.object().keys({
   productName: Joi.string().min(3).required(),
   cost: Joi.number().integer().positive().multiple(5).required(),
-  amount: Joi.number().integer().positive().optional().default(0),
+  amount: Joi.number().integer().positive().optional().allow(0).default(0),
 });
 
 export const validatorCreateProduct = (req: Request, res: Response, next: NextFunction) => {
