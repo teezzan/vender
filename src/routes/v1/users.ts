@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { changePassword, login, register } from 'controllers/auth';
-import { editUser, getUser, deleteUser } from 'controllers/users';
+import { editUser, getUser, deleteUser, resetUserDeposit } from 'controllers/users';
 import { depositCoin } from 'controllers/users/';
 import { checkJwt } from 'middleware/checkJwt';
 import { checkRole } from 'middleware/checkRole';
@@ -24,5 +24,7 @@ router.post('/', [checkJwt, validatorEdit], editUser);
 router.delete('/', [checkJwt], deleteUser);
 
 router.post('/deposit', [checkJwt, validatorDepositCoin, checkRole([Roles.Buyer])], depositCoin);
+
+router.get('/reset', [checkJwt, checkRole([Roles.Buyer])], resetUserDeposit);
 
 export default router;

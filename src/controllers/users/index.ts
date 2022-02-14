@@ -3,3 +3,4 @@ export * from './editUser';
 export * from './getUser';
 export * from './buyProduct';
 export * from './depositCoin';
+export * from './resetUserDeposit';

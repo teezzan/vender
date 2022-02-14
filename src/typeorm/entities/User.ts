@@ -72,15 +72,6 @@ export class User {
 
   @Transaction()
   async moveFunds(sinkUser: User, amount: number, @TransactionRepository(User) userRepository: Repository<User>) {
-    // const coinType = CoinDenomination.Ten;
-    // const index = this.deposit.findIndex((coin) => coin.denomination == coinType);
-
-    // this.deposit[index].quantity = this.deposit[index].quantity - 1;
-    // sinkUser.deposit.push({
-    //   denomination: coinType,
-    //   quantity: 1,
-    // });
-
     this.deposit.sort((a, b) => a.denomination - b.denomination).reverse();
 
     this.deposit.forEach((cointype, index) => {
