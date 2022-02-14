@@ -48,15 +48,18 @@ export const buyProduct = async (req: Request, res: Response, next: NextFunction
       const customError = new CustomError(404, 'General', `Deposit Insufficient.`, ['Deposit Insufficient.']);
       return next(customError);
     }
-    const updatedUser = await user.moveFunds(seller, totalCost, userRepository);
-
+    const { source, err } = await user.moveFunds(seller, totalCost, userRepository);
+    if (err !== null) {
+      const customError = new CustomError(404, 'General', err.message, [err]);
+      return next(customError);
+    }
     product.amountAvailable = product.amountAvailable - amountOfProduct;
     const updatedProduct = await productRepository.save(product);
 
     res.customSuccess(200, 'Successful', {
       totalCost,
       product: updatedProduct,
-      change: updatedUser.deposit,
+      change: source.deposit,
     });
   } catch (err) {
     const customError = new CustomError(400, 'Raw', 'Error', null, err);

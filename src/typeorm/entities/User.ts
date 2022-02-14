@@ -72,17 +72,42 @@ export class User {
 
   @Transaction()
   async moveFunds(sinkUser: User, amount: number, @TransactionRepository(User) userRepository: Repository<User>) {
-    const coinType = CoinDenomination.Ten;
-    const index = this.deposit.findIndex((coin) => coin.denomination == coinType);
+    // const coinType = CoinDenomination.Ten;
+    // const index = this.deposit.findIndex((coin) => coin.denomination == coinType);
 
-    this.deposit[index].quantity = this.deposit[index].quantity - 1;
-    sinkUser.deposit.push({
-      denomination: coinType,
-      quantity: 1,
+    // this.deposit[index].quantity = this.deposit[index].quantity - 1;
+    // sinkUser.deposit.push({
+    //   denomination: coinType,
+    //   quantity: 1,
+    // });
+
+    this.deposit.sort((a, b) => a.denomination - b.denomination).reverse();
+
+    this.deposit.forEach((cointype, index) => {
+      if (amount != 0) {
+        let numOfCoin = Math.floor(amount / cointype.denomination);
+        if (numOfCoin >= cointype.quantity) {
+          numOfCoin = cointype.quantity;
+        }
+        amount = amount - numOfCoin * cointype.denomination;
+        this.deposit[index].quantity = cointype.quantity - numOfCoin;
+        const c_index = this.deposit.findIndex((coin) => coin.denomination == cointype.denomination);
+        if (c_index != -1) {
+          sinkUser.deposit[c_index].quantity += numOfCoin;
+        } else {
+          sinkUser.deposit.push({
+            denomination: cointype.denomination,
+            quantity: numOfCoin,
+          });
+        }
+      }
     });
-
-    const p1 = await userRepository.save(this);
-    const p2 = await userRepository.save(sinkUser);
-    return p1;
+    if (amount != 0) {
+      return { source: null, sink: null, err: new Error('Deficit of ' + amount + 'cent remaining. Aborting!') };
+    } else {
+      const source = await userRepository.save(this);
+      const sink = await userRepository.save(sinkUser);
+      return { source, sink, err: null };
+    }
   }
 }
