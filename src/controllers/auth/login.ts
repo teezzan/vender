@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { getRepository } from 'typeorm';
 
-import { Role, Roles } from 'typeorm/entities/types';
+import { Roles } from 'typeorm/entities/types';
 import { User } from 'typeorm/entities/User';
 import { JwtPayload } from 'types/JwtPayload';
 import { createJwtToken } from 'utils/createJwtToken';

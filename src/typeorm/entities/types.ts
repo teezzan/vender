@@ -1,5 +1,3 @@
-export type Role = 'ADMINISTRATOR' | 'STANDARD';
-export type Language = 'en-US' | 'sl-SI';
 export enum Roles {
   Buyer,
   Seller,

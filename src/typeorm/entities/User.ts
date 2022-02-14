@@ -10,7 +10,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { Role, Language, Roles, CoinDenomination } from './types';
+import { Roles, CoinDenomination } from './types';
 
 @Entity('users')
 export class User {

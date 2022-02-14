@@ -8,8 +8,9 @@
     "start": "NODE_PATH=./dist node ./dist/index.js",
     "lint": "eslint --max-warnings 0 --ext .js,ts src",
     "lint-prettier": "prettier --config .prettierrc --list-different '{src,test}/**/*.{ts,js,css,scss}'",
-    "prettier": "prettier --config .prettierrc --write './**/*.{ts,js,css,scss,json,md}'"
-},
+    "prettier": "prettier --config .prettierrc --write './**/*.{ts,js,css,scss,json,md}'",
+    "test": "NODE_PATH=./src mocha --require ts-node/register 'test/integration/**/*.test.ts' --timeout 20000 --exit"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -20,6 +21,8 @@
     "morgan": "^1.10.0",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
     "typeorm": "^0.2.41",
     "typeorm-naming-strategies": "^2.0.0"
   },
@@ -58,6 +61,5 @@
     "ts-node-dev": "^1.1.8",
     "typescript": "4.5.5"
   },
-  "config": {
-  }
+  "config": {}
 }
