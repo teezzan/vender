@@ -10,7 +10,7 @@ export const Stubs = {
   productStub: [
     {
       productName: 'NFL Bowl',
-      cost: 100,
+      cost: 5,
       amount: 10,
     },
     {

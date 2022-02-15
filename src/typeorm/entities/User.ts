@@ -75,22 +75,26 @@ export class User {
     this.deposit.sort((a, b) => a.denomination - b.denomination).reverse();
 
     this.deposit.forEach((cointype, index) => {
-      if (amount != 0) {
-        let numOfCoin = Math.floor(amount / cointype.denomination);
-        if (numOfCoin >= cointype.quantity) {
-          numOfCoin = cointype.quantity;
+      try {
+        if (amount != 0) {
+          let numOfCoin = Math.floor(amount / cointype.denomination);
+          if (numOfCoin >= cointype.quantity) {
+            numOfCoin = cointype.quantity;
+          }
+          amount = amount - numOfCoin * cointype.denomination;
+          this.deposit[index].quantity = cointype.quantity - numOfCoin;
+          const c_index = sinkUser.deposit.findIndex((coin) => coin.denomination == cointype.denomination);
+          if (c_index != -1) {
+            sinkUser.deposit[c_index].quantity += numOfCoin;
+          } else {
+            sinkUser.deposit.push({
+              denomination: cointype.denomination,
+              quantity: numOfCoin,
+            });
+          }
         }
-        amount = amount - numOfCoin * cointype.denomination;
-        this.deposit[index].quantity = cointype.quantity - numOfCoin;
-        const c_index = this.deposit.findIndex((coin) => coin.denomination == cointype.denomination);
-        if (c_index != -1) {
-          sinkUser.deposit[c_index].quantity += numOfCoin;
-        } else {
-          sinkUser.deposit.push({
-            denomination: cointype.denomination,
-            quantity: numOfCoin,
-          });
-        }
+      } catch (err) {
+        console.log(err);
       }
     });
     if (amount != 0) {

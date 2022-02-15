@@ -32,8 +32,11 @@ export const depositCoin = async (req: Request, res: Response, next: NextFunctio
     }
 
     try {
-      await userRepository.save(user);
-      res.customSuccess(200, 'Coin Deposited successfully.');
+      const updatedUser = await userRepository.save(user);
+      res.customSuccess(200, 'Coin Deposited successfully.', {
+        deposit: updatedUser.deposit,
+        total: updatedUser.totalDeposit(),
+      });
     } catch (err) {
       const customError = new CustomError(409, 'Raw', `Coin '${coin}' can't be saved.`, null, err);
       return next(customError);

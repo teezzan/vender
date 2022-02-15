@@ -11,7 +11,7 @@ import { User } from '../../src/typeorm/entities/User';
 import { Stubs } from '../stubs';
 const { sellerUserStub, buyerUserStub, productStub } = Stubs;
 
-describe('Product API', () => {
+describe('API Tests', () => {
   let dbConnection: Connection;
   let userRepository: Repository<User>;
   let productRepository: Repository<Product>;
@@ -34,12 +34,13 @@ describe('Product API', () => {
     dbConnection = await dbCreateConnection();
     userRepository = getRepository(User);
     productRepository = getRepository(Product);
+    await userRepository.delete({});
+    await productRepository.delete({});
   });
 
   after(async () => {
     await userRepository.delete({});
     await productRepository.delete({});
-    // await dbConnection.close();
   });
 
   beforeEach(async () => {
@@ -117,6 +118,7 @@ describe('Product API', () => {
       expect(res.body.data).to.have.lengthOf(0);
     });
   });
+
   describe('Product API Validation Tests', () => {
     it('should not allow products cost that are not multiple of 5', async () => {
       const product = {
@@ -170,6 +172,69 @@ describe('Product API', () => {
 
       res = await request(app).delete(`/v1/products/${res.body.data.id}`).set('Authorization', buyerUserToken);
       expect(res.status).to.equal(401);
+    });
+  });
+
+  describe('Test /deposit Endpoint', () => {
+    beforeEach(async () => {
+      await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[0]);
+      await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[1]);
+    });
+
+    it('should allow user to deposit', async () => {
+      const res = await request(app)
+        .post('/v1/users/deposit')
+        .set('Authorization', buyerUserToken)
+        .send({ coin: 'Five' });
+      expect(res.status).to.equal(200);
+      expect(res.body.data.total).to.equal(5);
+      expect(res.body.data.deposit).to.not.have.lengthOf(0);
+      expect(res.body.data.deposit[0]).to.contain({
+        quantity: 1,
+        denomination: 5,
+      });
+    });
+
+    it('should allow user to deposit only enum values', async () => {
+      const res = await request(app)
+        .post('/v1/users/deposit')
+        .set('Authorization', buyerUserToken)
+        .send({ coin: 'Three' });
+      expect(res.status).to.equal(400);
+      expect(res.body).to.contain({
+        errorType: 'Validation',
+        errorMessage: '"coin" must be one of [Five, Ten, Twenty, Fifty, Hundred]',
+      });
+    });
+  });
+
+  describe('Test /buy Endpoint', () => {
+    let product1;
+    let product2;
+    const num = 2;
+    beforeEach(async () => {
+      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
+      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
+      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Ten' });
+      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Fifty' });
+
+      let res = await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[0]);
+      product1 = res.body.data;
+      res = await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[0]);
+      product2 = res.body.data;
+    });
+
+    it('should allow user to buy', async () => {
+      const res = await request(app).post('/v1/products/buy').set('Authorization', buyerUserToken).send({
+        productId: product1.id,
+        amountOfProduct: num,
+      });
+      expect(res.status).to.equal(200);
+      expect(res.body.data.totalCost).to.equal(product1.cost * num);
+      expect(res.body.data.product).to.contain(product1);
+      const change = res.body.data.change.sort((a, b) => a.denomination - b.denomination);
+      expect(change[0].denomination).to.be.equal(5);
+      expect(change[0].quantity).to.be.equal(1);
     });
   });
 });
