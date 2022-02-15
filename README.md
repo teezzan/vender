@@ -9,7 +9,6 @@
 - [x] Ability to Deposit Coins for purchase.
 - [x] Ability to "Upload" and Restock products.
 - [x] Store PDF for up to two days in the cloud.
-- [x] Documentation page found [here](https://leaguey.herokuapp.com/swagger-html) (https://leaguey.herokuapp.com/swagger-html).
 
 **Note**: **I have a deployed version of the aplication found [here on Heroku](https://leaguey.herokuapp.com/swagger-html)**
 
@@ -28,23 +27,11 @@ This application can be deployed locally by the following ways.
 - Using the local environment.
 
 ### Prerequisites
-If you are considering the first two options of deployment, you would need to have a local installation of mySQL. `docker-compose` automates the setting up of these prerequisites and is the prefered form of deployment.
+If you are considering the first two options of deployment, you would need to have a local installation of MySQL.
 
-### Docker-compose
-
-You need to run the project by running.
-```bash
-npm run make:up
-``` 
-or 
-
-```bash
-docker-compose -f "docker-compose.yml" up -d --build
-
-```
 
 ### Docker
-To run the application with docker, you need a local istallation of MySQL and the `MYSQL_DATABASE` already created. After satisfying the reuirement, run the following to build the image. **Note**: `MYSQL_DATABASE` will not be created automatically and would need to be manually created.
+To run the application with docker, you need a local installation of MySQL and the `POSTGRES_DB` already created. After satisfying the requirement, run the following to build the image. **Note**: `POSTGRES_DB` will not be created automatically and would need to be manually created.
 ```bash
 docker build --pull --rm -f "Dockerfile" -t leaguey:latest "."
 ```
@@ -58,46 +45,47 @@ docker run --rm -it \
     -e POSTGRES_DB='slot' \
     -e PG_PORT=5432 \
     -e PG_HOST='localhost' \
+    -e JWT_SECRET='jwt'
+    -e JWT_EXPIRATION='50m'
     -p 4000:4000/tcp \
-    leaguey:latest
+    vender:latest
 
 ```
 You can also pull the image from DockerHub with:
 ```bash
 docker run --rm -it \
     --network="host" \
-    -e NODE_ENV=prod \
+    -e NODE_ENV='production' \
     -e POSTGRES_PASSWORD='newPassword' \
     -e POSTGRES_USER='postgres' \
     -e POSTGRES_DB='slot' \
     -e PG_PORT=5432 \
     -e PG_HOST='localhost' \
+    -e JWT_SECRET='jwt'
+    -e JWT_EXPIRATION='50m'
     -p 4000:4000/tcp \
-    teezzan/leaguey:latest
+    teezzan/vender:latest
 ```
 ### Local Environment
 
 Foremost, you have to clone this repository and install all the dependencies with the following commands.
 ```bash
-git clone https://github.com/teezzan/Leaguey.git
-cd Leaguey
+git clone https://github.com/teezzan/vender.git
+cd vender
 npm install
 
 ```
 Rename the `.env.example` to `.env` and customize it to your local machines specifications.
 **Note**: `POSTGRES_DB` will not be created automatically and would need to be manually created.
 
-Run `npm run make:serve` to start the local server.
-
-
+Run `npm run dev` to start the local server.
 
 
 ### NPM scripts
 
-- `npm run make:up`: Uses Docker-compose to spring up server
-- `npm run make:test`: Run tests
-- `npm run make:build`: Builds the Typescript code and deploy locally
-- `npm run make:serve`: Run tests
+- `npm run test`: Run tests
+- `npm run build`: Builds the Typescript code and deploy locally
+- `npm run prettier`: Run prettier Lint.
 
 ## API Reference/Documentation
 A swagger documentation can be found at `http://localhost:3000/swagger-html`

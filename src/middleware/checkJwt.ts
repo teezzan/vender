@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { JwtPayload } from '../types/JwtPayload';
-import { createJwtToken } from '../utils/createJwtToken';
 import { CustomError } from '../utils/response/custom-error/CustomError';
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
