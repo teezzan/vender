@@ -26,9 +26,9 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       newproduct.amountAvailable = amount;
       newproduct.sellerId = sellerId;
 
-      await productRepository.save(newproduct);
+      const savedProject = await productRepository.save(newproduct);
 
-      res.customSuccess(200, 'Product successfully created.');
+      res.customSuccess(201, 'Product successfully created.', savedProject);
     } catch (err) {
       const customError = new CustomError(400, 'Raw', `Product '${productName}' can't be created`, null, err);
       return next(customError);

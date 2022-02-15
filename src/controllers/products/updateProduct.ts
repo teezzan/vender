@@ -21,9 +21,9 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
     if (cost) product.cost = cost;
     if (amount) product.amountAvailable = amount;
     try {
-      await productRepository.save(product);
+      const updatedProduct = await productRepository.save(product);
 
-      res.customSuccess(200, 'Product successfully updated.');
+      res.customSuccess(200, 'Product successfully updated.', updatedProduct);
     } catch (err) {
       const customError = new CustomError(400, 'Raw', `Product '${productName}' can't be updated`, null, err);
       return next(customError);
