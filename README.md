@@ -12,6 +12,7 @@
 
 **Note**: **I have a deployed version of the aplication found [here on Heroku](https://leaguey.herokuapp.com/swagger-html)**
 
+
 ## Built With
 
 - [Nodejs](https://nodejs.org/en/)
@@ -88,7 +89,7 @@ Run `npm run dev` to start the local server.
 - `npm run prettier`: Run prettier Lint.
 
 ## API Reference/Documentation
-A swagger documentation can be found at `http://localhost:3000/swagger-html`
+A  documentation can be found at `http://localhost:4000/`
 ## Authors
 
 **[Taiwo Yusuf](https://github.com/teezzan/)**

@@ -14,6 +14,8 @@ import { errorHandler } from './middleware/errorHandler';
 import routes from './routes';
 import { dbCreateConnection } from './typeorm/dbCreateConnection';
 
+global.__root = __dirname + '/';
+
 export const app = express();
 app.use(cors());
 app.use(helmet());
@@ -29,6 +31,9 @@ try {
   console.log(err);
 }
 app.use(morgan('combined'));
+
+app.use('/', express.static(path.join(__dirname, 'public')));
+console.log(path.join(__dirname, 'public'));
 
 app.use('/', routes);
 
