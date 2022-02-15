@@ -1,7 +1,7 @@
 # Vender
 
 ## The Ultimate API based Vending Machine.
-![Logo](./images/leaguey.png)
+![Logo](./images/vender.png)
 
 >**Vender** allows you to do the following
 
@@ -9,8 +9,6 @@
 - [x] Ability to Deposit Coins for purchase.
 - [x] Ability to "Upload" and Restock products.
 - [x] Store PDF for up to two days in the cloud.
-
-**Note**: **I have a deployed version of the aplication found [here on Heroku](https://leaguey.herokuapp.com/swagger-html)**
 
 
 ## Built With
@@ -34,7 +32,7 @@ If you are considering the first two options of deployment, you would need to ha
 ### Docker
 To run the application with docker, you need a local installation of MySQL and the `POSTGRES_DB` already created. After satisfying the requirement, run the following to build the image. **Note**: `POSTGRES_DB` will not be created automatically and would need to be manually created.
 ```bash
-docker build --pull --rm -f "Dockerfile" -t leaguey:latest "."
+docker build --pull --rm -f "Dockerfile" -t vender:latest "."
 ```
 and this to run the image.
 ```bash
