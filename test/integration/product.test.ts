@@ -182,10 +182,7 @@ describe('API Tests', () => {
     });
 
     it('should allow user to deposit', async () => {
-      const res = await request(app)
-        .post('/v1/users/deposit')
-        .set('Authorization', buyerUserToken)
-        .send({ coin: 'Five' });
+      const res = await request(app).post('/v1/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
       expect(res.status).to.equal(200);
       expect(res.body.data.total).to.equal(5);
       expect(res.body.data.deposit).to.not.have.lengthOf(0);
@@ -196,10 +193,7 @@ describe('API Tests', () => {
     });
 
     it('should allow user to deposit only enum values', async () => {
-      const res = await request(app)
-        .post('/v1/users/deposit')
-        .set('Authorization', buyerUserToken)
-        .send({ coin: 'Three' });
+      const res = await request(app).post('/v1/deposit').set('Authorization', buyerUserToken).send({ coin: 'Three' });
       expect(res.status).to.equal(400);
       expect(res.body).to.contain({
         errorType: 'Validation',
@@ -213,28 +207,66 @@ describe('API Tests', () => {
     let product2;
     const num = 2;
     beforeEach(async () => {
-      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
-      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
-      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Ten' });
-      await request(app).post('/v1/users/deposit').set('Authorization', buyerUserToken).send({ coin: 'Fifty' });
+      await request(app).post('/v1/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
+      await request(app).post('/v1/deposit').set('Authorization', buyerUserToken).send({ coin: 'Five' });
+      await request(app).post('/v1/deposit').set('Authorization', buyerUserToken).send({ coin: 'Ten' });
+      await request(app).post('/v1/deposit').set('Authorization', buyerUserToken).send({ coin: 'Fifty' });
 
       let res = await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[0]);
       product1 = res.body.data;
-      res = await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[0]);
+      res = await request(app).post('/v1/products/').set('Authorization', sellerUserToken).send(productStub[1]);
       product2 = res.body.data;
     });
 
     it('should allow user to buy', async () => {
-      const res = await request(app).post('/v1/products/buy').set('Authorization', buyerUserToken).send({
+      const res = await request(app).post('/v1/buy').set('Authorization', buyerUserToken).send({
         productId: product1.id,
         amountOfProduct: num,
       });
       expect(res.status).to.equal(200);
       expect(res.body.data.totalCost).to.equal(product1.cost * num);
-      expect(res.body.data.product).to.contain(product1);
       const change = res.body.data.change.sort((a, b) => a.denomination - b.denomination);
       expect(change[0].denomination).to.be.equal(5);
-      expect(change[0].quantity).to.be.equal(1);
+      expect(change[0].quantity).to.be.equal(2);
+    });
+
+    it('should check for insufficient credit', async () => {
+      const res = await request(app).post('/v1/buy').set('Authorization', buyerUserToken).send({
+        productId: product2.id,
+        amountOfProduct: num,
+      });
+      expect(res.status).to.equal(400);
+      expect(res.body.errorMessage).to.equal('Deposit Insufficient.');
+    });
+    it('should return error for unavailable item', async () => {
+      const res = await request(app)
+        .post('/v1/buy')
+        .set('Authorization', buyerUserToken)
+        .send({
+          productId: product2.id + 10,
+          amountOfProduct: num,
+        });
+      expect(res.status).to.equal(404);
+      expect(res.body.errorMessage).to.equal('Product not found.');
+    });
+    it('should return error for negative item amount', async () => {
+      const res = await request(app)
+        .post('/v1/buy')
+        .set('Authorization', buyerUserToken)
+        .send({
+          productId: product2.id + 10,
+          amountOfProduct: -1 * num,
+        });
+      expect(res.status).to.equal(400);
+      expect(res.body.errorMessage).to.equal('"amountOfProduct" must be a positive number');
+    });
+    it('should return error due to change problems', async () => {
+      const res = await request(app).post('/v1/buy').set('Authorization', buyerUserToken).send({
+        productId: product1.id,
+        amountOfProduct: 9,
+      });
+      expect(res.status).to.equal(500);
+      expect(res.body.errorMessage).to.equal('Deficit of 25cent remaining. Aborting!');
     });
   });
 });

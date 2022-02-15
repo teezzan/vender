@@ -35,6 +35,4 @@ router.put('/:id', [checkJwt, checkRole([Roles.Seller]), validatorUpdateProduct]
 
 router.delete('/:id', [checkJwt, checkRole([Roles.Seller])], deleteProduct);
 
-router.post('/buy', [checkJwt, checkRole([Roles.Buyer]), validatorBuyProduct], buyProduct);
-
 export default router;

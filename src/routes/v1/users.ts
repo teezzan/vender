@@ -2,12 +2,9 @@ import { Router } from 'express';
 
 import { changePassword, login, register } from 'controllers/auth';
 import { editUser, getUser, deleteUser, resetUserDeposit } from 'controllers/users';
-import { depositCoin } from 'controllers/users/';
 import { checkJwt } from 'middleware/checkJwt';
-import { checkRole } from 'middleware/checkRole';
 import { validatorChangePassword, validatorLogin, validatorRegister } from 'middleware/validation/auth';
-import { validatorDepositCoin, validatorEdit } from 'middleware/validation/users';
-import { Roles } from 'typeorm/entities/types';
+import { validatorEdit } from 'middleware/validation/users';
 
 const router = Router();
 
@@ -22,9 +19,5 @@ router.post('/change-password', [checkJwt, validatorChangePassword], changePassw
 router.post('/', [checkJwt, validatorEdit], editUser);
 
 router.delete('/', [checkJwt], deleteUser);
-
-router.post('/deposit', [checkJwt, validatorDepositCoin, checkRole([Roles.Buyer])], depositCoin);
-
-router.get('/reset', [checkJwt, checkRole([Roles.Buyer])], resetUserDeposit);
 
 export default router;

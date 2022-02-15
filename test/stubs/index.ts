@@ -15,7 +15,7 @@ export const Stubs = {
     },
     {
       productName: 'Ramen',
-      cost: 10,
+      cost: 1000,
       amount: 5,
     },
   ],
