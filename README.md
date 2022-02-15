@@ -44,7 +44,7 @@ docker run --rm -it \
     -e POSTGRES_DB='slot' \
     -e PG_PORT=5432 \
     -e PG_HOST='localhost' \
-    -e JWT_SECRET='jwt'
+    -e JWT_SECRET='jwtSecret'
     -e JWT_EXPIRATION='50m'
     -p 4000:4000/tcp \
     vender:latest
@@ -63,7 +63,7 @@ docker run --rm -it \
     -e JWT_SECRET='jwt'
     -e JWT_EXPIRATION='50m'
     -p 4000:4000/tcp \
-    teezzan/vender:latest
+    teehazzan/vender:latest
 ```
 ### Local Environment
 
