@@ -1,7 +1,7 @@
 # Vender
 
 ## The Ultimate API based Vending Machine.
-![Logo](./images/vender.png)
+![Logo](./docs/vender.png)
 
 >**Vender** allows you to do the following
 
