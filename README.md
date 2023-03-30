@@ -8,7 +8,6 @@
 - [x] Sign up as a Buyer or Seller.
 - [x] Ability to Deposit Coins for purchase.
 - [x] Ability to "Upload" and Restock products.
-- [x] Store PDF for up to two days in the cloud.
 
 
 ## Built With
